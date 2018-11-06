@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Home</title>
+
+    <object th:include="fragments/fragment :: css" th:remove="tag"></object>
+    <object th:include="fragments/fragment :: js" th:remove="tag"></object>
+</head>
+
+<body>
+    <nav th:replace="fragments/fragment :: navbar"></nav>
+
+    <div class="container-fluid">
+        <h2 th:text=" 'Hello ' + ${#httpServletRequest.remoteUser} + ' !'">Login as</h2>
+        
+        <div th:if="${message != null}">
+            <div class="alert green">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <p th:text="${message}"></p>
+            </div>
+        </div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-header">Tambah User Baru</div>
+					<div class="card-body">
+						<form th:action="@{/user/addUser}" method="post">
+							<div class="row form-group">
+								<label class="col-sm-4"> User Name </label> <input
+									class="col-sm-8 form-control input-sm" type="text"
+									name="username" required/>
+							</div>
+							<div class="row form-group">
+								<label class="col-sm-4"> Password: </label> <input
+									class="col-sm-8 form-control input-sm" type="password"
+									name="password" required pattern="(?=.*[0-9])(?=.*[a-zA-Z]).{8,}"/>
+							</div>
+							<div class="row form-group">
+								<label class="col-sm-4"> Role: </label> <input
+									class="col-sm-8 form-control input-sm" type="text" name="role" required/>
+							</div>
+							<div>
+								<button type="submit" class="btn btn-primary">Simpan</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-header">Update Password</div>
+					<div class="card-body">
+						<form id="formChangePassword" th:action="@{/user/updateUser}" method="POST">
+							<input type="hidden" th:name="username" th:value="${#httpServletRequest.remoteUser}"/>
+							<div class="row form-group">
+								<label class="col-sm-4"> Password Lama </label> <input
+									class="col-sm-8 form-control input-sm" type="password"
+									name="passwordLama" id="passwordLama" required/>
+							</div>
+							<div class="row form-group">
+								<label class="col-sm-4"> Password Baru </label> <input
+									class="col-sm-8 form-control input-sm" type="password"
+									name="passwordBaru" id="passwordBaru" required/>
+							</div>
+							<div class="row form-group">
+								<label class="col-sm-4"> Konfirmasi Password Baru </label> <input
+									class="col-sm-8 form-control input-sm" type="password" 
+									name="konfirmasiPasswordBaru" id="konfirmasiPasswordBaru" required/>
+							</div>
+							<div>
+								<button id="btnSubmitChangePassword" type="submit" class="btn btn-primary">Simpan</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Tambah Dealer
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Fitur untuk menambah dealer.</p>
+                        <a class="btn btn-primary" th:href="@{/dealer/add}">Tambah</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Cari Dealer berdasarkan Id
+                    </div>
+                    <form th:action="@{/dealer/view}" method="GET">
+                        <div class="card-body">
+                            <label for="dealerId">Id Dealer:</label>
+                            <input type="text" name="dealerId" class="form-control" />
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+<script th:inline="javascript">
+	$('#btnSubmitChangePassword').on('click', function(e){
+		e.preventDefault();
+		var pass1 = $("#passwordBaru").val();
+        var pass2 = $("#konfirmasiPasswordBaru").val();
+        var ok = true;
+        if (pass1 != pass2) {
+            alert("Passwords Do not match");
+            $("#passwordBaru").css("border-color", "#E34234");
+            $("#konfirmasiPasswordBaru").css("border-color", "#E34234");
+            ok = false;
+        }
+        else {
+        	console.log(ok)
+        	$('#formChangePassword').trigger('submit');
+        }
+	})
+</script>
+
+</html>
